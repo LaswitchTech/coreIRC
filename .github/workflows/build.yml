@@ -1,0 +1,54 @@
+name: Build and Package the Application
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  build-exe:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller sip importlib PySide6-Addons psutil chardet
+          pip install PyQt5
+
+      # Step 4: Build the .exe file
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller --onefile --noconsole --name Configurator --icon src/icons/icon.ico --add-data "src/styles;styles" --add-data "src/icons;icons" --add-data "src/lib;lib" src/configurator.py
+
+      # Step 5: Move the compiled executable to dist/windows
+      - name: Move Configurator.exe to dist/windows
+        run: |
+          if (-Not (Test-Path dist/windows)) { New-Item -ItemType Directory -Path dist/windows }
+          if (Test-Path dist/windows/Configurator.exe) { Remove-Item dist/windows/Configurator.exe }
+          Move-Item dist\Configurator.exe dist\windows\Configurator.exe
+
+      # Step 6: Commit the .exe file to the dev branch
+      - name: Commit .exe to dev branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/windows/Configurator.exe
+          git commit -m "configurator.py: Build executable Configurator.exe"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}

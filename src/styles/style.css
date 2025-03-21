@@ -1,0 +1,149 @@
+#mainWindow,
+#mainLayout,
+#rowLayout,
+#rowContainerLayout,
+#sectionLayout,
+#sectionContainerLayout,
+#scrollLayout {
+    padding: 0px;
+    margin: 0px;
+    background-color: #323232;
+    color: #fff;
+}
+
+#saveButton {
+    border: 1px solid #41d7a7;
+    background-color: #41d7a7;
+    color: white;
+    font-size: 14px;
+    padding: 15px;
+}
+
+#sectionHeader,
+#sectionTitle,
+#sectionChevron {
+    background-color: #76797C;
+    color: #fff;
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 5px;
+}
+
+#fieldLabel{
+    font-size: 14px;
+    padding: 5px;
+    color: #fff;
+}
+
+#fieldInput,
+#fieldPath QLabel,
+#fieldPath QLineEdit,
+#fieldPath QPushButton,
+#fieldRange QLabel {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #76797C;
+    font-size: 14px;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+#fieldMultiSelect {
+    border-radius: 5px;
+    border: 1px solid #76797C;
+    font-size: 14px;
+}
+
+#fieldPath QPushButton {
+    background-color: #76797C;
+    color: white;
+    border: 1px solid #76797C;
+    padding: 10px;
+}
+
+#fieldRange QSlider::groove:horizontal {
+    border: 1px solid #76797C;
+    height: 10px;
+    background: #d6d6d6;
+    border-radius: 3px;
+}
+
+#fieldRange QSlider::handle:horizontal {
+    background: #76797C;
+    border: 1px solid #76797C;
+    width: 10px;
+    height: 14px;
+    margin: -7px 0;
+    border-radius: 5px;
+}
+
+#fieldRange QSlider::sub-page:horizontal {
+    background: #1768e3;
+    border: 1px solid #1768e3;
+    border-radius: 5px;
+    height: 10px;
+}
+
+#fieldRange QSlider::add-page:horizontal {
+    background: #d6d6d6;
+    border: 1px solid #76797C;
+    border-radius: 5px;
+    height: 10px;
+}
+
+
+QSpinBox::down-button,
+QSpinBox::up-button {
+    subcontrol-origin: border;
+    width: 24px;
+    background-color: #76797C;
+    border: 1px solid #76797C;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+QSpinBox::up-button {
+    subcontrol-position: top right;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0px;
+}
+
+QSpinBox::down-button {
+    subcontrol-position: bottom right;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 5px;
+}
+
+QSpinBox::up-arrow,
+QSpinBox::down-arrow {
+    color: #fff;
+    width: 16px;
+    height: 16px;
+}
+
+QSpinBox::up-arrow {
+    image: url("src/icons/caret-up-fill-white.png");
+}
+
+QSpinBox::down-arrow {
+    image: url("src/icons/caret-down-fill-white.png");
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    width: 24px;
+    background-color: #76797C;
+    border: 1px solid #76797C;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+QComboBox::down-arrow {
+    image: url("src/icons/caret-down-fill-white.png");
+    color: #fff;
+    width: 16px;
+    height: 16px;
+}

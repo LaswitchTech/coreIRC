@@ -1,0 +1,92 @@
+name: Create a new Release and add Assets
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Step 2: Set Tag as Filename
+      - name: Set Tag as Filename
+        id: tag_name
+        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      # Step 3: Create ZIP file
+      - name: Create ZIP file
+        run: zip -r "${{ env.TAG_NAME }}.zip" .
+
+      # Step 4: Generate Changelog with Fallback
+      - name: Generate Changelog
+        id: generate_changelog
+        run: |
+          # Try to find the most recent tag before the current one
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tags found. Generating changelog for the entire commit history."
+            echo -e "# Changelog\n" > CHANGELOG.md
+            git log --pretty=format:"* %s" >> CHANGELOG.md
+          else
+            echo "Found previous tag: $PREV_TAG. Generating changelog from $PREV_TAG to HEAD."
+            echo -e "# Changelog\n" > CHANGELOG.md
+            git log ${PREV_TAG}..HEAD --pretty=format:"* %s" >> CHANGELOG.md
+          fi
+
+          # List unique contributors for the commits
+          echo -e "\n\n# Contributors\n" >> CHANGELOG.md
+          git log --format='%aN' | sort -u | awk '{print "* " $0}' >> CHANGELOG.md
+
+      # Step 5: Create Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body_path: ./CHANGELOG.md
+
+      # Step 6: Upload Source ZIP Asset
+      - name: Upload Source ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ env.TAG_NAME }}.zip
+          asset_name: source.zip
+          asset_content_type: application/zip
+
+      # Step 7: Upload Configurator.exe Asset
+      - name: Upload Configurator.exe
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/windows/Configurator.exe
+          asset_name: Configurator.exe
+          asset_content_type: application/octet-stream
+
+      # Step 8: Upload Configurator.dmg Asset
+      - name: Upload Configurator.dmg
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/macos/Configurator.dmg
+          asset_name: Configurator.dmg
+          asset_content_type: application/octet-stream
