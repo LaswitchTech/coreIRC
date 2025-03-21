@@ -2,6 +2,7 @@
 import mysql.connector
 import json
 import bcrypt
+import datetime
 
 class Auth:
     """
